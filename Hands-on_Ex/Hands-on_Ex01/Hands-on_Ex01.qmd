@@ -16,7 +16,7 @@ pacman::p_load(tidyverse)
 ## Importing the data
 
 ```{r}
-exam_data <- read_csv("data/Exam_data.csv")
+exam_data <- readr::read_csv("data/Exam_data.csv")
 ```
 
 # Plotting a simple bar chart
@@ -26,6 +26,7 @@ ggplot(data = exam_data,
        aes(x = RACE)) +
   geom_bar()
 ```
+
 # R Graphics VS ggplot
 
 ```{r}
@@ -61,7 +62,9 @@ ggplot(data=exam_data,
   scale_y_continuous(NULL,           
                      breaks = NULL)  
 ```
+
 # Geometric Objects
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x = MATHS)) +
@@ -83,6 +86,7 @@ ggplot(data=exam_data,
 ```
 
 # geom-density
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x = MATHS)) +
@@ -112,6 +116,7 @@ ggplot(data=exam_data,
 ```
 
 # geom_violin
+
 ```{r}
 ggplot(data=exam_data, 
        aes(y = MATHS, 
@@ -121,12 +126,14 @@ ggplot(data=exam_data,
 ```
 
 # geom_point
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x= MATHS, 
            y=ENGLISH)) +
   geom_point()
 ```
+
 ```{r}
 ggplot(data=exam_data, 
        aes(y = MATHS, 
@@ -158,6 +165,7 @@ ggplot(data=exam_data,
              colour="red",          
              size=4)
 ```
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x= MATHS, y=ENGLISH)) +
@@ -172,8 +180,8 @@ ggplot(data=exam_data,
               linewidth=0.5)
 ```
 
-
 # Facets
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x= MATHS)) +
@@ -186,6 +194,7 @@ ggplot(data=exam_data,
   geom_histogram(bins=20) +
     facet_grid(~ CLASS)
 ```
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x=RACE)) +
@@ -227,6 +236,3 @@ ggplot(data=exam_data,
   coord_flip() +
   theme_minimal()
 ```
-
-
-
