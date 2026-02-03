@@ -2,7 +2,7 @@
 title: "Hands on Exercise 4"
 author: "YU DONGHUI"
 ---
-
+  
 ```{r}
 pacman::p_load(ggdist, ggridges, ggthemes,
                colorspace, tidyverse)
@@ -12,7 +12,7 @@ pacman::p_load(ggdist, ggridges, ggthemes,
 exam <- read_csv("data/Exam_data.csv")
 ```
 
-### 9  Visualising Distribution
+### 9 Visualising Distribution
 
 ### Plotting ridgeline graph: ggridges method
 
@@ -30,7 +30,7 @@ ggplot(exam,
   scale_x_continuous(
     name = "English grades",
     expand = c(0, 0)
-    ) +
+  ) +
   scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
   theme_ridges()
 ```
@@ -70,12 +70,13 @@ ggplot(exam,
 ```
 
 ### Ridgeline plots with quantile lines
+
 ```{r}
 ggplot(exam,
        aes(x = ENGLISH, 
            y = CLASS, 
            fill = factor(stat(quantile))
-           )) +
+       )) +
   stat_density_ridges(
     geom = "density_ridges_gradient",
     calc_ecdf = TRUE, 
@@ -88,12 +89,12 @@ ggplot(exam,
        aes(x = ENGLISH, 
            y = CLASS, 
            fill = factor(stat(quantile))
-           )) +
+       )) +
   stat_density_ridges(
     geom = "density_ridges_gradient",
     calc_ecdf = TRUE, 
     quantiles = c(0.025, 0.975)
-    ) +
+  ) +
   scale_fill_manual(
     name = "Probability",
     values = c("#FF0000A0", "#A0A0A0A0", "#0000FFA0"),
@@ -104,6 +105,7 @@ ggplot(exam,
 ```
 
 ### Visualising Distribution with Raincloud Plot
+
 ```{r}
 ggplot(exam, 
        aes(x = RACE, 
@@ -139,6 +141,7 @@ ggplot(exam,
 ```
 
 ### Finishing touch
+
 ```{r}
 ggplot(exam, 
        aes(x = RACE, 
@@ -157,14 +160,14 @@ ggplot(exam,
   theme_economist()
 ```
 
-
-
 ### 10 Visual Statistical Analysis
+
 ```{r}
 pacman::p_load(ggstatsplot, tidyverse)
 ```
 
 ### One-sample test: gghistostats() method
+
 ```{r}
 set.seed(1234)
 
@@ -178,6 +181,7 @@ gghistostats(
 ```
 
 ### Two-sample mean test: ggbetweenstats()
+
 ```{r}
 ggbetweenstats(
   data = exam,
@@ -189,6 +193,7 @@ ggbetweenstats(
 ```
 
 ### Oneway ANOVA Test: ggbetweenstats() method
+
 ```{r}
 ggbetweenstats(
   data = exam,
@@ -211,25 +216,24 @@ ggscatterstats(
   x = MATHS,
   y = ENGLISH,
   marginal = FALSE,
-  )
+)
 ```
 
 ### Significant Test of Association (Depedence) : ggbarstats() methods
+
 ```{r}
 exam1 <- exam %>% 
   mutate(MATHS_bins = 
            cut(MATHS, 
                breaks = c(0,60,75,85,100))
-)
+  )
 
 ggbarstats(exam1, 
            x = MATHS_bins, 
            y = GENDER)
 ```
 
-
-
-### 11  Visualising Uncertainty
+### 11 Visualising Uncertainty
 
 ```{r}
 pacman::p_load(plotly, crosstalk, DT, 
@@ -242,6 +246,7 @@ exam <- read_csv("data/Exam_data.csv")
 ```
 
 ## Visualizing the uncertainty of point estimates: ggplot2 methods
+
 ```{r}
 my_sum <- exam %>%
   group_by(RACE) %>%
@@ -249,14 +254,14 @@ my_sum <- exam %>%
     n=n(),
     mean=mean(MATHS),
     sd=sd(MATHS)
-    ) %>%
+  ) %>%
   mutate(se=sd/sqrt(n-1))
 
 knitr::kable(head(my_sum), format = 'html')
 ```
 
-
 ### Plotting standard error bars of point estimates
+
 ```{r}
 ggplot(my_sum) +
   geom_errorbar(
@@ -268,17 +273,17 @@ ggplot(my_sum) +
     alpha=0.9, 
     linewidth=0.5) +
   geom_point(aes
-           (x=RACE, 
-            y=mean), 
-           stat="identity", 
-           color="red",
-           size = 1.5,
-           alpha=1) +
+             (x=RACE, 
+               y=mean), 
+             stat="identity", 
+             color="red",
+             size = 1.5,
+             alpha=1) +
   ggtitle("Standard error of mean maths score by rac")
 ```
 
-
 ## Plotting confidence interval of point estimates
+
 ```{r}
 ggplot(my_sum) +
   geom_errorbar(
@@ -290,18 +295,18 @@ ggplot(my_sum) +
     alpha=0.9, 
     linewidth=0.5) +
   geom_point(aes
-           (x=RACE, 
-            y=mean), 
-           stat="identity", 
-           color="red",
-           size = 1.5,
-           alpha=1) +
+             (x=RACE, 
+               y=mean), 
+             stat="identity", 
+             color="red",
+             size = 1.5,
+             alpha=1) +
   labs(x = "Maths score",
        title = "95% confidence interval of mean maths score by race")
 ```
 
-
 ## Visualizing the uncertainty of point estimates with interactive error bars
+
 ```{r}
 shared_df = SharedData$new(my_sum)
 
@@ -350,6 +355,7 @@ bscols(widths = c(4,8),
 ```
 
 ### Visualizing the uncertainty of point estimates: ggdist methods
+
 ```{r}
 exam %>%
   ggplot(aes(x = RACE, 
@@ -362,15 +368,15 @@ exam %>%
 exam %>%
   ggplot(aes(x = RACE, y = MATHS)) +
   stat_pointinterval(.width = 0.95,
-  .point = median,
-  .interval = qi) +
+                     .point = median,
+                     .interval = qi) +
   labs(
     title = "Visualising confidence intervals of median math score",
     subtitle = "Median Point + Multiple-interval plot")
 ```
 
-
 ### Visualizing the uncertainty of point estimates: ggdist methods
+
 ```{r}
 exam %>%
   ggplot(aes(x = RACE, 
@@ -395,9 +401,10 @@ exam %>%
 
 ```
 
-
 ### Visualising Uncertainty with Hypothetical Outcome Plots (HOPs)
+
 ### Installing ungeviz package
+
 ```{r}
 devtools::install_github("wilkelab/ungeviz")
 ```
@@ -424,20 +431,21 @@ ggplot(data = exam,
   transition_states(.draw, 1, 3)
 ```
 
-
-### 8  Funnel Plots for Fair Comparisons
-
+### 8 Funnel Plots for Fair Comparisons
 
 ```{r}
 pacman::p_load(tidyverse, FunnelPlotR, plotly, knitr)
 ```
 
 ### Importing Data
+
 ```{r}
 covid19 <- read_csv("data/COVID-19_DKI_Jakarta.csv") %>%
   mutate_if(is.character, as.factor)
 ```
+
 ### FunnelPlotR methods: The basic plot
+
 ```{r}
 funnel_plot(
   .data = covid19,
@@ -448,6 +456,7 @@ funnel_plot(
 ```
 
 ### FunnelPlotR methods: Makeover 1
+
 ```{r}
 funnel_plot(
   .data = covid19,
@@ -461,6 +470,7 @@ funnel_plot(
 ```
 
 ### FunnelPlotR methods: Makeover 2
+
 ```{r}
 funnel_plot(
   .data = covid19,
@@ -478,6 +488,7 @@ funnel_plot(
 ```
 
 ### Computing the basic derived fields
+
 ```{r}
 df <- covid19 %>%
   mutate(rate = Death / Positive) %>%
@@ -497,6 +508,7 @@ dfCI <- data.frame(number.ll95, number.ul95, number.ll999,
 ```
 
 ### Calculate lower and upper limits for 95% and 99.9% CI
+
 ```{r}
 p <- ggplot(df, aes(x = Positive, y = rate)) +
   geom_point(aes(label=`Sub-district`), 
@@ -544,10 +556,11 @@ p
 ```
 
 ### Interactive Funnel Plot: plotly + ggplot2
+
 ```{r}
 fp_ggplotly <- ggplotly(p,
-  tooltip = c("label", 
-              "x", 
-              "y"))
+                        tooltip = c("label", 
+                                    "x", 
+                                    "y"))
 fp_ggplotly
 ```
