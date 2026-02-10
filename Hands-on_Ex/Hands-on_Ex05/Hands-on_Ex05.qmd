@@ -602,6 +602,6 @@ tm <- treemap(realis2018_summarised,
 ```
 
 ```{r}
-d3tree(tm,rootname = "Singapore" )
+d3tree(tm,rootname = "Singapore")
 ```
 
