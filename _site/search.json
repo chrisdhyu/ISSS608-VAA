@@ -355,5 +355,68 @@
     "title": "Hands on Exercise 5",
     "section": "Including with correlation coefficients",
     "text": "Including with correlation coefficients\n\npanel.cor &lt;- function(x, y, digits=2, prefix=\"\", cex.cor, ...) {\nusr &lt;- par(\"usr\")\non.exit(par(usr))\npar(usr = c(0, 1, 0, 1))\nr &lt;- abs(cor(x, y, use=\"complete.obs\"))\ntxt &lt;- format(c(r, 0.123456789), digits=digits)[1]\ntxt &lt;- paste(prefix, txt, sep=\"\")\nif(missing(cex.cor)) cex.cor &lt;- 0.8/strwidth(txt)\ntext(0.5, 0.5, txt, cex = cex.cor * (1 + r) / 2)\n}\n\npairs(wine[,2:12], \n      upper.panel = panel.cor)\n\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter"
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html",
+    "title": "TH_EX1",
+    "section": "",
+    "text": "#| label: setup \n#| include: true\nlibrary(tidyverse)\nlibrary(readxl)\nlibrary(janitor)\nlibrary(patchwork)\nlibrary(scales)"
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-1",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-1",
+    "title": "TH_EX1",
+    "section": "3.1 Observation 1:",
+    "text": "3.1 Observation 1:\nThe histogram clearly shows that student performance is concentrated in the middle. The vast majority of students fall into the “Fair” and “Good” categories, while extremes are rare—very few students reported “Poor” or “Excellent” results. The mean and median are nearly identical and sit close to the “Fair” mark. This symmetry suggests a balanced distribution where most students perform at an average to slightly above-average level, providing a stable baseline for further analysis."
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-2",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-2",
+    "title": "TH_EX1",
+    "section": "4.1 Observation 2:",
+    "text": "4.1 Observation 2:\nThis chart compares the makeup of GPA categories across different year groups. While “Fair” is the dominant grade for all, clear differences exist. The “Graduated” group has a noticeably higher proportion of “Good” and “Excellent” students compared to undergraduates. Conversely, 4th-year students show the highest concentration in the “Fair” category. This pattern suggests that academic performance may improve slightly as students near or complete graduation. Note that this shows relative proportions within each year, not absolute student numbers."
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-3",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-3",
+    "title": "TH_EX1",
+    "section": "5.1 Observation 3:",
+    "text": "5.1 Observation 3:\nSurprisingly, reported study time does not clearly distinguish between GPA levels. The boxplots show that median study time is high (near the maximum score of 5) across all groups, from “Poor” to “Excellent.” Although high performers report high study times, so do the lower performers, resulting in significant overlap. The data is heavily bunched at the top, suggesting most students claim to study hard regardless of their results. This implies that study quantity alone is not a strong differentiator for performance in this dataset."
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-4",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-4",
+    "title": "TH_EX1",
+    "section": "6.1 Observation 4:",
+    "text": "6.1 Observation 4:\nA clearer negative trend appears here compared to study time. Students with “Poor” GPAs report a higher median time spent on social media and a wider range of usage habits. In contrast, “Good” and “Excellent” students tend to report lower social media usage, clustering around the lower end of the scale. While there is still overlap between the groups, the pattern suggests that high academic achievers generally spend less time on social media than their lower-performing peers."
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-5",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-5",
+    "title": "TH_EX1",
+    "section": "7.1 Observation 5:",
+    "text": "7.1 Observation 5:\nSimilar to social media, spending time with friends shows a slight negative link with GPA. The “Poor” category has a visibly higher median score for socializing compared to other groups. Students in the “Fair” through “Excellent” ranges report lower median values, generally clustering around a score of 2. While the difference isn’t massive, the trend indicates that students with lower grades tend to report more time socializing, whereas higher performers report slightly less."
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-6",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-6",
+    "title": "TH_EX1",
+    "section": "8.1 Observation 6:",
+    "text": "8.1 Observation 6:\nStandardising these behaviours into Z-scores reveals a clear trade-off. The “Poor” group scores above average (positive Z-scores) for social media and time with friends, but below average for study time. Conversely, “Good” and “Excellent” students show the opposite pattern: they score above average in study intensity but below average in social activities. This chart concisely summarises the behavioural split: higher grades correlate with more studying and less leisure time, while lower grades show the reverse."
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-7",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-7",
+    "title": "TH_EX1",
+    "section": "9.1 Observation 7:",
+    "text": "9.1 Observation 7:\nThis plot explores if study time changes with social media use. For “Good” and “Excellent” students (top lines), study time remains consistently high regardless of how much social media they use. Their commitment to studying appears resilient to distractions. In contrast, the “Poor” group shows erratic patterns, likely due to the small sample size at certain points. Overall, this suggests that high performers maintain their study habits even if they use social media, rather than a simple one-to-one trade-off."
+  },
+  {
+    "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-8",
+    "href": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-8",
+    "title": "TH_EX1",
+    "section": "10.1 Observation 8:",
+    "text": "10.1 Observation 8:\nThis chart ranks factors by their correlation with GPA. Overall, no single factor is a strong predictor, as all correlations are weak (below 0.2). “Study methods” and “Adaptation to university” show the strongest positive links, suggesting that how students study matters more than just time spent. On the negative side, “Social media” and “Time with friends” show slight inverse relationships with grades. Institutional factors like university support show almost no correlation, highlighting that personal habits track closer to GPA than external support."
   }
 ]

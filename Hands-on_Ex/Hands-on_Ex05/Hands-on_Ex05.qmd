@@ -3,7 +3,8 @@ title: "Hands on Exercise 5"
 author: "YU DONGHUI"
 ---
 
-### 13  Creating Ternary Plot with R
+### 13 Creating Ternary Plot with R
+
 ```{r}
 pacman::p_load(plotly, ggtern, tidyverse)
 ```
@@ -76,11 +77,10 @@ plot_ly(
   )
 ```
 
-
-
-### 6  Visual Correlation Analysis
+### 6 Visual Correlation Analysis
 
 ## Installing and Launching R Packages
+
 ```{r}
 pacman::p_load(corrplot, ggstatsplot, tidyverse)
 ```
@@ -90,18 +90,21 @@ wine <- read_csv("data/wine_quality.csv")
 ```
 
 # Building a basic correlation matrix
+
 ```{r}
 pairs(wine[,1:11])
 pairs(wine[,2:12])
 ```
 
 ## Drawing the lower corner
+
 ```{r}
 pairs(wine[,2:12], upper.panel = NULL)
 pairs(wine[,2:12], lower.panel = NULL)
 ```
 
 ## Including with correlation coefficients
+
 ```{r}
 panel.cor <- function(x, y, digits=2, prefix="", cex.cor, ...) {
 usr <- par("usr")
@@ -119,6 +122,7 @@ pairs(wine[,2:12],
 ```
 
 # Visualising Correlation Matrix: ggcormat()
+
 # The basic plot
 
 ```{r}
@@ -143,6 +147,7 @@ ggplot.component = list(
 ```
 
 # Building multiple plots
+
 ```{r}
 grouped_ggcorrmat(
   data = wine,
@@ -162,8 +167,11 @@ grouped_ggcorrmat(
   )
 )
 ```
+
 # Visualising Correlation Matrix using corrplot Package
+
 # Getting started with corrplot
+
 ```{r}
 wine.cor <- cor(wine[, 1:11])
 corrplot(wine.cor)
@@ -182,8 +190,8 @@ corrplot(wine.cor,
          tl.col = "black")
 ```
 
-
 # Working with mixed layout
+
 ```{r}
 corrplot.mixed(wine.cor, 
                lower = "ellipse", 
@@ -201,6 +209,7 @@ corrplot.mixed(wine.cor,
 ```
 
 # Combining corrgram with the significant test
+
 ```{r}
 wine.sig = cor.mtest(wine.cor, conf.level= .95)
 
@@ -213,7 +222,9 @@ corrplot(wine.cor,
          p.mat = wine.sig$p,
          sig.level = .05)
 ```
+
 # Reorder a corrgram
+
 ```{r}
 corrplot.mixed(wine.cor, 
                lower = "ellipse", 
@@ -225,6 +236,7 @@ corrplot.mixed(wine.cor,
 ```
 
 # Reordering a correlation matrix using hclust
+
 ```{r}
 corrplot(wine.cor, 
          method = "ellipse", 
@@ -235,25 +247,28 @@ corrplot(wine.cor,
          addrect = 3)
 ```
 
+### 14 Heatmap for Visualising and Analysing Multivariate Data
 
-
-### 14  Heatmap for Visualising and Analysing Multivariate Data
 ```{r}
 pacman::p_load(seriation, dendextend, heatmaply, tidyverse)
 ```
 
 # Importing and preparing the data set
+
 ```{r}
 wh <- read_csv("data/WHData-2018.csv")
 row.names(wh) <- wh$Country
 ```
+
 # Transforming the data frame into a matrix
+
 ```{r}
 wh1 <- dplyr::select(wh, c(3, 7:12))
 wh_matrix <- data.matrix(wh)
 ```
 
 # heatmap() of R Stats
+
 ```{r}
 wh_heatmap <- heatmap(wh_matrix,
                       Rowv=NA, Colv=NA)
@@ -268,6 +283,7 @@ wh_heatmap <- heatmap(wh_matrix,
 ```
 
 # Working with heatmaply
+
 ```{r}
 heatmaply(mtcars)
 
@@ -280,6 +296,7 @@ heatmaply(percentize(wh_matrix[, -c(1, 2, 4, 5)]))
 ```
 
 # Manual approach
+
 ```{r}
 heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
           dist_method = "euclidean",
@@ -287,6 +304,7 @@ heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
 ```
 
 # Statistical approach
+
 ```{r}
 wh_d <- dist(normalize(wh_matrix[, -c(1, 2, 4, 5)]), method = "euclidean")
 dend_expend(wh_d)[[3]]
@@ -314,6 +332,7 @@ heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
 ```
 
 # Working with colour palettes
+
 ```{r}
 heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
           seriate = "none",
@@ -337,9 +356,7 @@ heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
           )
 ```
 
-
-
-### 15  Visual Multivariate Analysis with Parallel Coordinates Plot
+### 15 Visual Multivariate Analysis with Parallel Coordinates Plot
 
 ```{r}
 pacman::p_load(GGally, parallelPlot, tidyverse)
@@ -350,12 +367,14 @@ wh <- read_csv("data/WHData-2018.csv")
 ```
 
 # Plotting a simple parallel coordinates
+
 ```{r}
 ggparcoord(data = wh, 
            columns = c(7:12))
 ```
 
 # Plotting a parallel coordinates with boxplot
+
 ```{r}
 ggparcoord(data = wh, 
            columns = c(7:12), 
@@ -365,7 +384,9 @@ ggparcoord(data = wh,
            boxplot = TRUE, 
            title = "Parallel Coordinates Plot of World Happines Variables")
 ```
+
 # Parallel coordinates with facet
+
 ```{r}
 ggparcoord(data = wh, 
            columns = c(7:12), 
@@ -376,7 +397,9 @@ ggparcoord(data = wh,
            title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
   facet_wrap(~ Region)
 ```
+
 # Rotating x-axis text label
+
 ```{r}
 ggparcoord(data = wh, 
            columns = c(7:12), 
@@ -390,6 +413,7 @@ ggparcoord(data = wh,
 ```
 
 # Adjusting the rotated x-axis text label
+
 ```{r}
 ggparcoord(data = wh, 
            columns = c(7:12), 
@@ -403,6 +427,7 @@ ggparcoord(data = wh,
 ```
 
 # Plotting Interactive Parallel Coordinates Plot: parallelPlot methods
+
 ```{r}
 wh <- wh %>%
   select("Happiness score", c(7:12))
@@ -419,6 +444,7 @@ parallelPlot(wh,
 ```
 
 # Parallel coordinates plot with histogram
+
 ```{r}
 histoVisibility <- rep(TRUE, ncol(wh))
 parallelPlot(wh,
@@ -426,9 +452,8 @@ parallelPlot(wh,
              histoVisibility = histoVisibility)
 ```
 
+# 16 Treemap Visualisation with R
 
-
-# 16  Treemap Visualisation with R
 ```{r}
 pacman::p_load(treemap, treemapify, tidyverse) 
 ```
@@ -438,6 +463,7 @@ realis2018 <- read_csv("data/realis2018.csv")
 ```
 
 # Grouped summaries without the Pipe
+
 ```{r}
 realis2018_grouped <- group_by(realis2018, `Project Name`,
                                `Planning Region`, `Planning Area`, 
@@ -448,7 +474,9 @@ realis2018_summarised <- summarise(realis2018_grouped,
                           `Median Unit Price ($ psm)` = median(`Unit Price ($ psm)`, na.rm = TRUE), 
                           `Median Transacted Price` = median(`Transacted Price ($)`, na.rm = TRUE))
 ```
+
 # Grouped summaries with the pipe
+
 ```{r}
 realis2018_summarised <- realis2018 %>% 
   group_by(`Project Name`,`Planning Region`, 
@@ -472,6 +500,7 @@ treemap(realis2018_selected,
 ```
 
 # Working with vColor and type arguments
+
 ```{r}
 treemap(realis2018_selected,
         index=c("Planning Region", "Planning Area", "Project Name"),
@@ -484,6 +513,7 @@ treemap(realis2018_selected,
 ```
 
 # The “value” type treemap
+
 ```{r}
 treemap(realis2018_selected,
         index=c("Planning Region", "Planning Area", "Project Name"),
@@ -497,6 +527,7 @@ treemap(realis2018_selected,
 ```
 
 # The “manual” type treemap
+
 ```{r}
 treemap(realis2018_selected,
         index=c("Planning Region", "Planning Area", "Project Name"),
@@ -520,6 +551,7 @@ treemap(realis2018_selected,
 ```
 
 # Working with algorithm argument
+
 ```{r}
 treemap(realis2018_selected,
         index=c("Planning Region", "Planning Area", "Project Name"),
@@ -546,6 +578,7 @@ treemap(realis2018_selected,
 ```
 
 # Designing Treemap using treemapify Package
+
 ```{r}
 ggplot(data=realis2018_selected, 
        aes(area = `Total Unit Sold`,
@@ -557,6 +590,7 @@ ggplot(data=realis2018_selected,
 ```
 
 # Defining hierarchy
+
 ```{r}
 ggplot(data=realis2018_selected, 
        aes(area = `Total Unit Sold`,
@@ -584,12 +618,14 @@ ggplot(data=realis2018_selected,
 ```
 
 # Designing Interactive Treemap using d3treeR
+
 ```{r}
 library(devtools)
 library(d3treeR)
 ```
 
 # Designing An Interactive Treemap
+
 ```{r}
 tm <- treemap(realis2018_summarised,
         index=c("Planning Region", "Planning Area"),
@@ -604,4 +640,3 @@ tm <- treemap(realis2018_summarised,
 ```{r}
 d3tree(tm,rootname = "Singapore")
 ```
-

@@ -11,7 +11,9 @@ pacman::p_load(ggiraph, plotly,
 ```{r}
 exam_data <- read_csv("data/Exam_data.csv")
 ```
+
 ## Tooltip effect with tooltip aesthetic
+
 ```{r}
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
@@ -30,6 +32,7 @@ girafe(
 ```
 
 ## Displaying multiple information on tooltip
+
 ```{r}
 exam_data$tooltip <- c(paste0(     
   "Name = ", exam_data$ID,         
@@ -52,6 +55,7 @@ girafe(
 ```
 
 ## Customising Tooltip style
+
 ```{r}
 tooltip_css <- "background-color:white; #<<
 font-style:bold; color:black;" #<<
@@ -76,6 +80,7 @@ girafe(
 ```
 
 ## Displaying statistics on tooltip
+
 ```{r}
 tooltip <- function(y, ymax, accuracy = .01) {
   mean <- scales::number(y, accuracy = accuracy)
@@ -104,6 +109,7 @@ girafe(ggobj = gg_point,
 ```
 
 ## Hover effect with data_id aesthetic
+
 ```{r}
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
@@ -122,6 +128,7 @@ girafe(
 ```
 
 ## Styling hover effect
+
 ```{r}
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
@@ -144,6 +151,7 @@ girafe(
 ```
 
 ## Combining tooltip and hover effect
+
 ```{r}
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
@@ -167,6 +175,7 @@ girafe(
 ```
 
 ## Click effect with onclick
+
 ```{r}
 exam_data$onclick <- sprintf("window.open(\"%s%s\")",
 "https://www.moe.gov.sg/schoolfinder?journey=Primary%20school",
@@ -188,6 +197,7 @@ girafe(
 ```
 
 ## Coordinated Multiple Views with ggiraph
+
 ```{r}
 p1 <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
@@ -222,6 +232,7 @@ girafe(code = print(p1 + p2),
 ```
 
 ## Interactive Data Visualisation - plotly methods!
+
 ```{r}
 plot_ly(
   data = exam_data,
@@ -233,6 +244,7 @@ plot_ly(
 ```
 
 ## Working with visual variable: plot_ly() method
+
 ```{r}
 plot_ly(
   data = exam_data,
@@ -244,6 +256,7 @@ plot_ly(
 ```
 
 ## Creating an interactive scatter plot: ggplotly() method
+
 ```{r}
 p <- ggplot(data=exam_data, 
             aes(x = MATHS,
@@ -255,6 +268,7 @@ ggplotly(p)
 ```
 
 ## Coordinated Multiple Views with plotly
+
 ```{r}
 d <- highlight_key(exam_data)
 p1 <- ggplot(data=d, 
@@ -274,13 +288,14 @@ subplot(ggplotly(p1),
         ggplotly(p2))
 ```
 
-
 ## Interactive Data Table: DT package
+
 ```{r}
 DT::datatable(exam_data, class= "compact")
 ```
 
 ## Linked brushing: crosstalk method
+
 ```{r}
 d <- highlight_key(exam_data) 
 p <- ggplot(d, 
@@ -298,10 +313,10 @@ crosstalk::bscols(gg,
                   widths = 5)
 ```
 
-
 ## Hands on Exercise 3: Programming Animated Statistical Graphics with R
 
 ## Loading the R packages
+
 ```{r}
 pacman::p_load(readxl, gifski, gapminder,
                plotly, gganimate, tidyverse)
@@ -320,6 +335,7 @@ globalPop <- read_xls("data/GlobalPopulation.xls",
 ```
 
 ## Animated Data Visualisation: gganimate methods
+
 ```{r}
 ggplot(globalPop, aes(x = Old, y = Young, 
                       size = Population, 
@@ -334,6 +350,7 @@ ggplot(globalPop, aes(x = Old, y = Young,
 ```
 
 ## Building the animated bubble plot
+
 ```{r}
 ggplot(globalPop, aes(x = Old, y = Young, 
                       size = Population, 
@@ -348,7 +365,9 @@ ggplot(globalPop, aes(x = Old, y = Young,
   transition_time(Year) +       
   ease_aes('linear')
 ```
+
 ## Building an animated bubble plot: ggplotly() method
+
 ```{r}
 gg <- ggplot(globalPop, 
        aes(x = Old, 
@@ -386,6 +405,7 @@ ggplotly(gg)
 ```
 
 ## Building an animated bubble plot: plot_ly() method
+
 ```{r}
 #| warning: false
 #| message: false
@@ -408,19 +428,3 @@ bp <- globalPop %>%
 
 bp
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
