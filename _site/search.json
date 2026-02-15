@@ -361,7 +361,7 @@
     "href": "Hands-on_Ex/TH_EX1/TH_EX1.html",
     "title": "TH_EX1",
     "section": "",
-    "text": "#| label: setup \n#| include: true\nlibrary(tidyverse)\nlibrary(readxl)\nlibrary(janitor)\nlibrary(patchwork)\nlibrary(scales)"
+    "text": "library(tidyverse)\nlibrary(readxl)\nlibrary(janitor)\nlibrary(patchwork)\nlibrary(scales)"
   },
   {
     "objectID": "Hands-on_Ex/TH_EX1/TH_EX1.html#observation-1",

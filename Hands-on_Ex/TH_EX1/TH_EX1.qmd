@@ -11,12 +11,6 @@ execute:
 ---
 
 ```{r}
-
-#| label: setup 
-#| include: true
-```
-
-```{r}
 library(tidyverse)
 library(readxl)
 library(janitor)
