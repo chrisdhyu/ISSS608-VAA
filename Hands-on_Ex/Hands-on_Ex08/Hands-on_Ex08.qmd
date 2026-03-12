@@ -10,17 +10,22 @@ pacman::p_load(sf, tmap, tidyverse)
 ```
 
 ## Importing Geospatial Data into R
+
 ```{r}
 mpsz <- st_read(dsn = "data", 
                 layer = "MP14_SUBZONE_WEB_PL")
 ```
+
 ```{r}
 mpsz
 ```
+
 ```{r}
 popdata <- read_csv("data/respopagesextod2011to2020.csv")
 ```
+
 ## Data Preparation
+
 ```{r}
 popdata2020 <- popdata %>%
   filter(Time == 2020) %>%
@@ -41,6 +46,7 @@ mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
        `ECONOMY ACTIVE`, `AGED`, 
        `TOTAL`, `DEPENDENCY`)
 ```
+
 ```{r}
 popdata2020 <- popdata2020 %>%
   mutate(across(c(PA, SZ), toupper)) %>%
@@ -54,6 +60,7 @@ write_rds(mpsz_pop2020, "data/mpszpop2020.rds")
 ```
 
 ## Choropleth Mapping Geospatial Data Using tmap
+
 ```{r}
 tmap_mode("plot")
 qtm(mpsz_pop2020, 
@@ -61,6 +68,7 @@ qtm(mpsz_pop2020,
 ```
 
 ## Creating a choropleth map by using tmap’s elements
+
 ```{r}
 tm_shape(mpsz_pop2020)+
   tm_polygons(fill = "DEPENDENCY", 
@@ -86,7 +94,9 @@ tm_shape(mpsz_pop2020) +
 tm_shape(mpsz_pop2020)+
   tm_polygons("DEPENDENCY")
 ```
-## Drawing a choropleth map using tm_fill() and *tm_border()**
+
+## Drawing a choropleth map using tm_fill() and \*tm_border()\*\*
+
 ```{r}
 tm_shape(mpsz_pop2020)+
   tm_fill("DEPENDENCY")
@@ -96,7 +106,9 @@ tm_shape(mpsz_pop2020)+
   tm_borders(lwd = 0.01,  
              fill_alpha = 0.1)
 ```
+
 ## Data classification methods of tmap
+
 ```{r}
 tm_shape(mpsz_pop2020)+
   tm_polygons("DEPENDENCY",
@@ -123,6 +135,7 @@ tm_shape(mpsz_pop2020)+
 ```
 
 ## Colour Scheme
+
 ```{r}
 tm_shape(mpsz_pop2020)+
   tm_polygons("DEPENDENCY",
@@ -140,7 +153,9 @@ tm_shape(mpsz_pop2020)+
         values = "-brewer.greens")) +
   tm_borders(fill_alpha = 0.5)
 ```
+
 ## Map Layouts
+
 ```{r}
 tm_shape(mpsz_pop2020)+
   tm_polygons("DEPENDENCY",
@@ -178,11 +193,13 @@ tm_shape(mpsz_pop2020)+
   tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
              position = c("left", "bottom"))
 ```
+
 ```{r}
 tmap_style("white")
 ```
 
 ## Drawing Small Multiple Choropleth Maps
+
 ```{r}
 tm_shape(mpsz_pop2020)+
   tm_fill(c("YOUNG", "AGED"),
@@ -210,7 +227,9 @@ tm_shape(mpsz_pop2020) +
             title.size = 20) +
   tm_borders(alpha = 0.5)
 ```
+
 ## By creating multiple stand-alone maps with tmap_arrange()
+
 ```{r}
 youngmap <- tm_shape(mpsz_pop2020)+ 
   tm_polygons("YOUNG", 
@@ -239,14 +258,14 @@ tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
   tm_borders(alpha = 0.5)
 ```
 
-
-
 ### Visualising Geospatial Point Data
+
 ```{r}
 pacman::p_load(sf, tmap, tidyverse)
 ```
 
 ## Data Import and Preparation
+
 ```{r}
 sgpools <- read_csv("data/SGPools_svy21.csv")
 
@@ -254,6 +273,7 @@ list(sgpools)
 ```
 
 ## Creating a sf data frame from an aspatial data frame
+
 ```{r}
 sgpools_sf <- st_as_sf(sgpools, 
                        coords = c("XCOORD", "YCOORD"),
@@ -263,6 +283,7 @@ list(sgpools_sf)
 ```
 
 ## Drawing Proportional Symbol Map
+
 ```{r}
 tmap_mode("view")
 
@@ -272,7 +293,9 @@ tm_shape(sgpools_sf) +
            col = "black",
            lwd = 1)
 ```
+
 ## Lets make it proportional
+
 ```{r}
 tm_shape(sgpools_sf) + 
   tm_bubbles(fill = "red",
@@ -300,8 +323,8 @@ tm_shape(sgpools_sf) +
 tmap_mode("plot")
 ```
 
-
 ### Analytical Mapping
+
 ```{r}
 pacman::p_load(tmap, tidyverse, sf)
 ```
@@ -311,6 +334,7 @@ NGA_wp <- read_rds("data/NGA_wp.rds")
 ```
 
 ## Visualising distribution of non-functional water point
+
 ```{r}
 p1 <- tm_shape(NGA_wp) +
   tm_polygons(fill = "wp_functional",
@@ -338,6 +362,7 @@ p2 <- tm_shape(NGA_wp) +
 
 tmap_arrange(p2, p1, nrow = 1)
 ```
+
 ## Deriving Proportion of Functional Water Points and Non-Functional Water Points
 
 ```{r}
@@ -357,7 +382,9 @@ tm_shape(NGA_wp) +
              fill_alpha = 1) +
   tm_title("Rate map of functional water point by LGAs")
 ```
+
 ## Percentile Map
+
 ```{r}
 NGA_wp <- NGA_wp %>%
   drop_na()
@@ -367,7 +394,9 @@ var <- NGA_wp["pct_functional"] %>%
   st_set_geometry(NULL)
 quantile(var[,1], percent)
 ```
+
 ## Creating the get.var function
+
 ```{r}
 get.var <- function(vname,df) {
   v <- df[vname] %>% 
@@ -395,7 +424,9 @@ percentmap <- function(vnam, df, legtitle=NA, mtitle="Percentile Map"){
 
 percentmap("total_wp", NGA_wp)
 ```
+
 ## Box map
+
 ```{r}
 ggplot(data = NGA_wp,
        aes(x = "",
@@ -404,6 +435,7 @@ ggplot(data = NGA_wp,
 ```
 
 ## Creating the boxbreaks function
+
 ```{r}
 boxbreaks <- function(v,mult=1.5) {
   qv <- unname(quantile(v))
@@ -433,6 +465,7 @@ boxbreaks <- function(v,mult=1.5) {
 ```
 
 ## Creating the get.var function
+
 ```{r}
 get.var <- function(vname,df) {
   v <- df[vname] %>% st_set_geometry(NULL)
@@ -443,7 +476,9 @@ get.var <- function(vname,df) {
 var <- get.var("wp_nonfunctional", NGA_wp) 
 boxbreaks(var)
 ```
+
 ## Boxmap function
+
 ```{r}
 
 boxmap <- function(vnam, df, 
@@ -473,4 +508,3 @@ boxmap <- function(vnam, df,
 tmap_mode("plot")
 boxmap("wp_nonfunctional", NGA_wp)
 ```
-
