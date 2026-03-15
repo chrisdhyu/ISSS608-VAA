@@ -1,0 +1,409 @@
+---
+title: "TH_EX2 Exploratory Data Analysis"
+author: "YU DONGHUI"
+format:
+  html:
+    toc: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## **1. Installing and launching required R packages**
+
+Before performing the analysis, the required R packages are loaded.\
+These packages support data manipulation (tidyverse), statistical visualization (ggplot2, ggstatsplot), interactive graphics (plotly), scaling functions (scales), and correlation visualization (corrplot).
+
+```{r}
+pacman::p_load(tidyverse, ggstatsplot,ggplot2, plotly, scales,corrplot)
+```
+
+## **2. Loading the data**
+
+```{r}
+#| message: false
+#| warning: false
+data_cleaned <- read_csv("colombia_customers_processed.csv")
+```
+
+## **3. Distribution of Key Variables**
+To understand the overall characteristics of the dataset, we first examine the distribution of key behavioral and engagement variables.
+
+Some highly skewed variables, such as transaction volume and transaction counts, are log-transformed using log1p() to reduce skewness and improve visualization clarity.
+
+The variables are then reshaped into long format using pivot_longer() so that multiple histograms can be displayed simultaneously using facet_wrap().
+
+```{r}
+data_cleaned %>%
+  mutate(
+    log_total_tx_volume = log1p(total_tx_volume),
+    log_tx_count = log1p(tx_count),
+    log_avg_tx_value = log1p(avg_tx_value)
+  ) %>%
+  select(
+    churn_probability,
+    customer_tenure,
+    satisfaction_score,
+    nps_score,
+    support_tickets_count,
+    active_products,
+    log_total_tx_volume,
+    log_tx_count,
+    log_avg_tx_value
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30, fill = "darkseagreen3", color = "white") +
+  facet_wrap(~ variable, scales = "free") +
+  theme_minimal()
+```
+These histograms provide an overview of how key indicators are distributed across the dataset and help identify potential skewness, outliers, and variability among customers.
+
+## **4. Correlation Analysis of Churn-Related Variables**
+To examine the relationships between churn probability and customer behavior indicators, a correlation analysis is performed.
+
+Only numerical variables that are relevant to customer engagement, transaction activity, and satisfaction are selected for the analysis.  
+Spearman correlation is used because it is more robust to non-normal distributions and outliers compared with Pearson correlation.
+```{r}
+corr_df <- data_cleaned %>%
+  select(
+    churn_probability,
+    total_tx_volume,
+    tx_count,
+    avg_tx_value,
+    monthly_transaction_count,
+    transaction_frequency,
+    avg_daily_transactions,
+    customer_tenure,
+    satisfaction_score,
+    nps_score,
+    support_tickets_count,
+    resolved_tickets_ratio,
+    active_products,
+    feature_usage_diversity,
+    credit_utilization_ratio
+  )
+
+corr_mat <- cor(corr_df, use = "complete.obs", method = "spearman")
+
+corrplot(
+  corr_mat,
+  method = "color",
+  type = "upper",
+  tl.col = "black",
+  tl.cex = 0.7
+)
+```
+The resulting correlation matrix provides a visual overview of the strength and direction of relationships between variables, helping to identify factors that may be associated with higher churn probability.
+
+## **5. Supplementary Check: CLV Segment Profiling**
+Customers are grouped according to their CLV (Customer Lifetime Value) segment to explore whether customer value tiers exhibit different behavioral patterns.
+
+The summary statistics below calculate the average values of key engagement indicators within each CLV segment.
+```{r}
+profile_summary <- data_cleaned %>%
+  group_by(clv_segment) %>%
+  summarise(
+    avg_clv = mean(customer_lifetime_value, na.rm = TRUE),
+    avg_tx_volume = mean(total_tx_volume, na.rm = TRUE),
+    avg_tx_count = mean(tx_count, na.rm = TRUE),
+    avg_products = mean(active_products, na.rm = TRUE),
+    avg_satisfaction = mean(satisfaction_score, na.rm = TRUE),
+    avg_churn = mean(churn_probability, na.rm = TRUE)
+  )
+
+profile_summary
+
+profile_summary %>%
+  pivot_longer(-clv_segment, names_to = "metric", values_to = "value") %>%
+  ggplot(aes(x = clv_segment, y = value, fill = clv_segment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ metric, scales = "free") +
+  theme_minimal()
+```
+The bar charts provide a comparative view of behavioral metrics across CLV segments, allowing analysts to observe how engagement, transaction activity, and churn probability differ between customer groups.
+
+## **6. Churn Risk Analysis**
+
+Next, we investigate how customer sentiment indicators relate to churn probability.
+
+A scatter plot is constructed to examine the relationship between Net Promoter Score (NPS) and churn probability.  
+A LOESS smoothing curve is added to highlight the overall trend between these variables.
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 5
+
+p_nps <- ggplot(data_cleaned, aes(x = nps_score, y = churn_probability)) +
+  geom_jitter(alpha = 0.15, width = 1, height = 0.01, color = "steelblue") +
+  geom_smooth(method = "loess", se = TRUE, color = "darkred") +
+  labs(
+    title = "Churn Probability vs NPS Score",
+    x = "NPS Score",
+    y = "Churn Probability"
+  ) +
+  theme_minimal()
+
+p_nps
+
+
+```
+
+
+To further analyze customer sentiment effects, churn probability is compared across different satisfaction score levels.
+
+
+
+A boxplot is used to visualize the distribution of churn probability for each satisfaction category.
+
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 5
+
+p_satisfaction_box <- ggplot(
+  data_cleaned,
+  aes(
+    x = factor(satisfaction_score, ordered = TRUE),
+    y = churn_probability,
+    fill = factor(satisfaction_score, ordered = TRUE)
+  )
+) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(
+    title = "Churn Probability across Satisfaction Score Levels",
+    x = "Satisfaction Score",
+    y = "Churn Probability"
+  ) +
+  theme_minimal()
+
+p_satisfaction_box
+
+```
+
+The boxplot allows us to compare the variability and central tendency of churn probability across satisfaction levels.
+
+
+## **7. Churn Probability by Number of Support Tickets**
+
+Customer support interactions may reflect service issues or dissatisfaction.  
+To examine this relationship, the average churn probability is calculated for each level of support ticket count.
+
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 5
+
+support_summary <- data_cleaned %>%
+  group_by(support_tickets_count) %>%
+  summarise(
+    avg_churn = mean(churn_probability, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(support_summary, aes(x = support_tickets_count, y = avg_churn)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_point(color = "darkred", size = 2.5) +
+  geom_text(aes(label = n), vjust = -0.8, size = 3) +
+  labs(
+    title = "Average Churn Probability by Number of Support Tickets",
+    x = "Number of Support Tickets",
+    y = "Average Churn Probability"
+  ) +
+  theme_minimal()
+
+```
+
+
+The line chart shows how churn risk changes as the number of support tickets increases, potentially indicating whether frequent support interactions are associated with higher churn probability.
+
+
+## **8. Customer Tenure vs Churn**
+
+Customer tenure is another important indicator of engagement.  
+This visualization explores the relationship between the length of time a customer has been with the company and their churn probability.
+
+```{r}
+
+ggplot(
+  data_cleaned,
+  aes(
+    x = customer_tenure,
+    y = churn_probability
+  )
+) +
+  geom_point(alpha = 0.08, color = "steelblue") +
+  geom_smooth(method = "loess", se = TRUE, color = "darkred") +
+  labs(
+    title = "Churn Probability by Customer Tenure",
+    x = "Customer Tenure",
+    y = "Churn Probability"
+  ) +
+  theme_minimal()
+
+```
+
+The smoothing curve highlights the overall trend between customer tenure and churn probability across the dataset.
+
+
+## **9. Active Products vs Churn**
+
+Product adoption is often associated with customer loyalty.  
+This analysis examines how the number of active products held by a customer relates to churn probability.
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 5
+
+ggplot(
+  data_cleaned,
+  aes(
+    x = factor(active_products),
+    y = churn_probability,
+    fill = factor(active_products)
+  )
+) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(
+    title = "Churn Probability by Number of Active Products",
+    x = "Number of Active Products",
+    y = "Churn Probability"
+  ) +
+  theme_minimal()
+```
+
+The boxplot illustrates whether customers who hold more products tend to exhibit lower churn risk compared with customers with fewer active products.
+
+------------------------------------------------------------------------
+
+## **10. Prototype Dashboard User Guide**
+
+This section describes the design and usage of the prototype visual analytics dashboard developed using Shiny.\
+The dashboard enables users to interactively explore customer churn patterns and behavioral indicators derived from the EDA analysis.
+
+The prototype interface contains four main analytical modules:
+
+-   Overview of customer indicators
+-   Distribution analysis
+-   Relationship exploration
+-   Correlation analysis
+-   Customer segment profiling
+
+These modules allow users to examine churn risk from multiple perspectives and support exploratory investigation of customer behavior patterns.
+
+------------------------------------------------------------------------
+
+## **10.1 Overview Dashboard**
+
+![](images/clipboard-1668944365.png)
+
+The **Overview page** provides a high-level summary of key customer indicators.
+
+Key components include:
+
+-   Total number of customers in the dataset\
+-   Average churn probability\
+-   Average number of active products\
+-   Average satisfaction score
+
+These indicators allow users to quickly understand the overall customer profile and risk level before conducting deeper analysis.
+
+------------------------------------------------------------------------
+
+## **10.2 Distribution Analysis**
+
+![](images/clipboard-2861054610.png)
+
+The **Distribution Analysis module** visualizes the distribution of important behavioral and engagement variables.
+
+Users can explore variables such as:
+
+-   transaction volume
+-   transaction count
+-   average transaction value
+-   customer tenure
+-   churn probability
+
+Histograms allow analysts to identify skewness, outliers, and variability across the dataset.
+
+------------------------------------------------------------------------
+
+## **10.3 Relationship Exploration**
+
+![](images/clipboard-2610100679.png)
+
+The **Relationship Exploration module** investigates how customer attributes relate to churn probability.
+
+Examples of relationships visualized include:
+
+-   churn probability vs NPS score
+-   churn probability vs satisfaction score
+-   churn probability vs number of active products
+-   churn probability vs customer tenure
+
+Scatter plots and boxplots help reveal potential behavioral patterns associated with higher churn risk.
+
+------------------------------------------------------------------------
+
+## **10.4 Correlation Analysis**
+
+![](images/clipboard-960189920.png)
+
+The **Correlation Analysis module** displays a correlation matrix between churn probability and key behavioral indicators.
+
+This module helps users identify which variables are strongly associated with churn risk, including:
+
+-   transaction activity
+-   satisfaction indicators
+-   support interaction variables
+-   engagement metrics
+
+The correlation heatmap provides a quick overview of variable relationships across the dataset.
+
+------------------------------------------------------------------------
+
+## **10.5 Customer Segment Profiling**
+
+![](images/clipboard-2303684489.png)
+
+The **Customer Segment Profiling module** summarizes behavioral patterns across CLV segments.
+
+Customers are grouped into segments such as:
+
+-   Bronze
+-   Silver
+-   Gold
+-   Platinum
+
+For each segment, the dashboard visualizes:
+
+-   average churn probability
+-   average transaction activity
+-   average satisfaction score
+-   number of active products
+
+This analysis helps analysts understand how high-value customers differ from lower-value segments in terms of engagement and churn risk.
+
+------------------------------------------------------------------------
+
+## **11. Summary**
+
+The prototype dashboard integrates multiple exploratory modules to support churn risk analysis.
+
+Through interactive visualizations, users can:
+
+-   understand overall customer characteristics
+-   explore variable distributions
+-   analyze relationships between engagement indicators and churn
+-   compare behavioral patterns across customer segments
+
+These insights provide a foundation for further predictive modeling and the development of customer retention strategies.
